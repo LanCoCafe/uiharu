@@ -1,6 +1,6 @@
 import re
 
-from disnake import Message
+from disnake import Message, Game, Status
 from disnake.ext.commands import Bot as OriginalBot
 
 from .conversation import Conversation, ConversationStatus
@@ -19,8 +19,11 @@ class Bot(OriginalBot):
 
     async def on_ready(self):
         if self.conversation.status != ConversationStatus.PREPARED:
-            async for status in self.conversation.prepare():
-                await self.change_presence(**status)
+            await self.change_presence(activity=Game("準備中"), status=Status.dnd)
+
+            await self.conversation.prepare()
+
+            await self.change_presence(activity=Game("待命中"), status=Status.dnd)
 
     async def on_message(self, message: Message):
         if message.author.bot:

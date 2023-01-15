@@ -23,7 +23,7 @@ class Bot(InteractionBot):
 
             await self.conversation.prepare()
 
-            await self.change_presence(activity=Game("待命中"), status=Status.dnd)
+            await self.change_presence(activity=Game("待命中"), status=Status.online)
 
     async def on_message(self, message: Message):
         if message.author.bot:

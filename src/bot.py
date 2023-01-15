@@ -1,21 +1,34 @@
-from typing import re
+import asyncio
+import re
+from asyncio import Future
 
 from disnake import Message
+from disnake.abc import Messageable
 from disnake.ext.commands import Bot as OriginalBot
 
-from .conversations import ConversationManager
+from .conversation import Conversation, ConversationStatus
+
+
+async def typing_loop(channel: Messageable):
+    while True:
+        await channel.trigger_typing()
+        await asyncio.sleep(9)
 
 
 class Bot(OriginalBot):
-    def __init__(self, conversation_manager: ConversationManager, *args, **kwargs):
+    def __init__(self, conversation: Conversation, *args, **kwargs):
         """
-        :param conversation_manager: SessionManager instance
+        :param conversation: Conversation instance
         :param args: args
         :param kwargs: kwargs
         """
         super().__init__(*args, **kwargs)
 
-        self.conversation_manager = conversation_manager
+        self.conversation = conversation
+
+    async def on_ready(self):
+        if self.conversation.status != ConversationStatus.PREPARED:
+            await self.conversation.prepare()
 
     async def on_message(self, message: Message):
         if message.author.bot:
@@ -33,15 +46,10 @@ class Bot(OriginalBot):
 
         prompt = re.sub(r'<@([0-9]+)>', "", message.content)
 
-        if "?exit" in prompt:
-            await self.conversation_manager.remove_conversation(message.author.id)
+        future: Future = await asyncio.ensure_future(typing_loop(message.channel))
 
-            await message.reply("✅ Conversation ended.")
+        response = await self.conversation.ask(prompt)
 
-            return
+        future.cancel()
 
-        await message.channel.trigger_typing()
-
-        conversation = await self.conversation_manager.get_conversation(message.author.id)
-
-        await message.reply(await conversation.ask(prompt))
+        await message.reply(response)

@@ -1,27 +1,27 @@
+import asyncio
 from os import getenv
 
 from disnake import Intents
 from revChatGPT.ChatGPT import Chatbot
 
 from src.bot import Bot
-from src.conversations import ConversationManager
+from src.conversation import Conversation
 
 
 def main():
-    conversation_manager = ConversationManager(
+    conversation = Conversation(
         Chatbot({"session_token": getenv("CHATGPT_TOKEN")}),
-        load_brainwash(),
-        prepare_amount=3
+        load_brainwash()
     )
 
-    bot = Bot(conversation_manager=conversation_manager, intents=Intents.all())
+    bot = Bot(conversation, intents=Intents.all())
 
     try:
         bot.run(getenv("DISCORD_TOKEN"))
     except KeyboardInterrupt:
-        bot.close()
+        conversation.close()
 
-        conversation_manager.close()
+        asyncio.get_event_loop().close()
 
 
 def load_brainwash():

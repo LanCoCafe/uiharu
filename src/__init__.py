@@ -1,2 +1,2 @@
 from .bot import *
-from .conversations import *
+from .conversation import *

@@ -46,7 +46,7 @@ class Bot(OriginalBot):
 
         prompt = re.sub(r'<@([0-9]+)>', "", message.content)
 
-        future: Future = await asyncio.ensure_future(typing_loop(message.channel))
+        future: Future = asyncio.ensure_future(typing_loop(message.channel))
 
         response = await self.conversation.ask(prompt)
 

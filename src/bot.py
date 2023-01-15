@@ -28,7 +28,8 @@ class Bot(OriginalBot):
 
     async def on_ready(self):
         if self.conversation.status != ConversationStatus.PREPARED:
-            await self.conversation.prepare()
+            async for status in self.conversation.prepare():
+                await self.change_presence(**status)
 
     async def on_message(self, message: Message):
         if message.author.bot:

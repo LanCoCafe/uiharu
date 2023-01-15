@@ -1,7 +1,8 @@
 import asyncio
 from enum import Enum
-from typing import Union
+from typing import Union, AsyncIterable
 
+from disnake import BaseActivity, Status, Game
 from revChatGPT.ChatGPT import Chatbot
 
 
@@ -32,22 +33,31 @@ class Conversation:
 
         self.conversation_id: Union[str, None] = None  # This will be generated after first message is sent
 
-    async def prepare(self) -> None:
+    async def prepare(self) -> AsyncIterable[dict[str, Union[BaseActivity, Status]]]:
         """
         Prepare a conversation with specified brainwashing messages
-        :param brainwash: A list of message to brainwash ChatGPT
-        :return: None
+        :return: Iterate the description of current state, you can put the return values in a change_presence() function
         """
         self.status = ConversationStatus.PREPARING
 
         print("Preparing a new conversation")
 
-        for message in self.brainwash:
+        for index, message in enumerate(self.brainwash):
+            yield {
+                "activity": Game(f"準備中 ({index + 1}/{len(self.brainwash)})"),
+                "status": Status.do_not_disturb
+            }
+
             await self.ask(message, should_prepared=False)
 
         self.status = ConversationStatus.PREPARED
 
         print(f"Conversation {self.conversation_id} prepared")
+
+        yield {
+            "activity": Game(f"等待對話..."),
+            "status": Status.online
+        }
 
     async def ask(self, message: str, should_prepared: bool = True) -> str:
         """

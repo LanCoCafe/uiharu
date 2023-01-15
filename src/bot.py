@@ -1,3 +1,5 @@
+from typing import re
+
 from disnake import Message
 from disnake.ext.commands import Bot as OriginalBot
 
@@ -29,7 +31,9 @@ class Bot(OriginalBot):
             except AttributeError:
                 return
 
-        if message.content == "?exit":
+        prompt = re.sub(r'<@([0-9]+)>', "", message.content)
+
+        if "?exit" in prompt:
             await self.conversation_manager.remove_conversation(message.author.id)
 
             await message.reply("✅ Conversation ended.")
@@ -40,4 +44,4 @@ class Bot(OriginalBot):
 
         conversation = await self.conversation_manager.get_conversation(message.author.id)
 
-        await message.reply(await conversation.ask(message.content))
+        await message.reply(await conversation.ask(prompt))

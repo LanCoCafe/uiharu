@@ -97,7 +97,7 @@ class Conversation:
 
                 continue
 
-        await asyncio.sleep(5)
+        await asyncio.sleep(2)
         self.working = False
 
         if record:

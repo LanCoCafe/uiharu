@@ -6,9 +6,16 @@
 
 在一個段考前的下午，我們意外聊到了有關友情的話題：
 
-![第一部分對話](img/reason-of-making-this-1.png)
-![第二部分對話](img/reason-of-making-this-2.png)
-![第三部分對話](img/reason-of-making-this-3.png)
+```
+N - Nat1an
+C - 一號朋友 
+
+C: 反正我只想要平常有人可以跟我談生活小是這樣就夠惹 但貌似也蠻困難的
+N: ChatGPT
+C: 窩不要
+N: 我可以讓他變得有形象又有語音 這樣要嗎
+T: 期待欸 (RE: N)
+```
 
 然後這個 Repository 就誕生了。
 
@@ -34,6 +41,8 @@ pip install -r requirements.txt
 ```shell
 python main.py
 ```
+
+> 在運行前，機器人會將 `brainwash.txt` 中的每一行依序傳入 ChatGPT，你可以自訂這個檔案
 
 ## 計畫
 

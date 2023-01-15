@@ -45,8 +45,6 @@ class Conversation:
 
         self.last_brainwash_time = time.time()
 
-        asyncio.get_event_loop().create_task(self.brain_washing())
-
         return
 
     async def prepare(self) -> None:
@@ -59,6 +57,8 @@ class Conversation:
         print("Preparing a new conversation")
 
         await self.wash_brain()
+
+        asyncio.get_event_loop().create_task(self.brain_washing())
 
         self.status = ConversationStatus.PREPARED
 

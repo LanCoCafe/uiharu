@@ -152,7 +152,6 @@ class ConversationManager:
     async def check_conversation(self):
         """
         Keep check the conversation pool to make it always contentful
-        :return:
         """
         while True:
             if self.usable_conversation_amount() < self.prepare_amount:
@@ -164,3 +163,16 @@ class ConversationManager:
 
             await asyncio.sleep(30)
             continue
+
+    def close(self):
+        """
+        Close this Conversation Manager and remove all the conversations
+        """
+        for key, value in self.conversations:
+            if value.conversation_id:
+                self.chatbot.delete_conversation(value.conversation_id)
+
+        for conversation in self.conversation_pool:
+            self.chatbot.delete_conversation(conversation.conversation_id)
+
+        return

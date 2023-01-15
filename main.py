@@ -16,7 +16,12 @@ def main():
 
     bot = Bot(conversation_manager=conversation_manager, intents=Intents.all())
 
-    bot.run(getenv("DISCORD_TOKEN"))
+    try:
+        bot.run(getenv("DISCORD_TOKEN"))
+    except KeyboardInterrupt:
+        bot.close()
+
+        conversation_manager.close()
 
 
 def load_brainwash():

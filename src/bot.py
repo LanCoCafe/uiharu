@@ -1,18 +1,9 @@
-import asyncio
 import re
-from asyncio import Future
 
 from disnake import Message
-from disnake.abc import Messageable
 from disnake.ext.commands import Bot as OriginalBot
 
 from .conversation import Conversation, ConversationStatus
-
-
-async def typing_loop(channel: Messageable):
-    while True:
-        await channel.trigger_typing()
-        await asyncio.sleep(9)
 
 
 class Bot(OriginalBot):
@@ -47,10 +38,8 @@ class Bot(OriginalBot):
 
         prompt = re.sub(r'<@([0-9]+)>', "", message.content)
 
-        future: Future = asyncio.ensure_future(typing_loop(message.channel))
+        await message.channel.trigger_typing()
 
         response = await self.conversation.ask(prompt)
-
-        future.cancel()
 
         await message.reply(response)

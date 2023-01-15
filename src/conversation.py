@@ -1,4 +1,6 @@
 import asyncio
+import time
+from collections import deque
 from enum import Enum
 from typing import Union
 
@@ -32,6 +34,21 @@ class Conversation:
 
         self.conversation_id: Union[str, None] = None  # This will be generated after first message is sent
 
+        self.last_message_time: int = 0
+        self.last_brainwash_time: int = 0
+        self.last_messages = deque(maxlen=5)
+        self.working = False
+
+    async def wash_brain(self):
+        for message in self.brainwash:
+            await self.ask(message, should_prepared=False, record=False)
+
+        self.last_brainwash_time = time.time()
+
+        asyncio.get_event_loop().create_task(self.brain_washing())
+
+        return
+
     async def prepare(self) -> None:
         """
         Prepare a conversation with specified brainwashing messages
@@ -41,18 +58,18 @@ class Conversation:
 
         print("Preparing a new conversation")
 
-        for message in self.brainwash:
-            await self.ask(message, should_prepared=False)
+        await self.wash_brain()
 
         self.status = ConversationStatus.PREPARED
 
         print(f"Conversation {self.conversation_id} prepared")
 
-    async def ask(self, message: str, should_prepared: bool = True) -> str:
+    async def ask(self, message: str, should_prepared: bool = True, record: bool = True) -> str:
         """
         Asks chatgpt a question in this conversation
         :param message: Message to ask
         :param should_prepared: Should this conversation in a prepared status
+        :param record: Should this message be recorded
         :return: Response message
         :raise: Not Prepared if should_prepared is True and conversation isn't prepared
         """
@@ -68,6 +85,7 @@ class Conversation:
 
         print(f"{self.conversation_id or 'Not assigned'}: {message}")
 
+        self.working = True
         while True:
             # noinspection PyBroadException
             try:
@@ -78,12 +96,29 @@ class Conversation:
                 await asyncio.sleep(30)
 
                 continue
+        self.working = False
+
+        if record:
+            self.last_messages.append(message)
+            self.last_message_time = time.time()
 
         self.conversation_id = response['conversation_id']
 
         print(f"{response['conversation_id'][:23]}... / ChatGPT: {response['message']}")
 
         return response['message']
+
+    async def brain_washing(self):
+        while True:
+            if self.status == ConversationStatus.PREPARED \
+                    and (time.time() - self.last_message_time) > 120 \
+                    and (time.time() - self.last_brainwash_time) > 120 \
+                    and len(self.last_messages) == 5:
+                await self.wash_brain()
+
+                self.last_messages.clear()
+
+            await asyncio.sleep(20)
 
     def close(self):
         self.chatbot.delete_conversation(self.conversation_id)

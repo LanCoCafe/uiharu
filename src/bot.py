@@ -33,15 +33,22 @@ class Bot(InteractionBot):
             return
 
         if self.user not in message.mentions:  # This part is suck, I will find a way to improve it.
-            if not message.reference.cached_message:
+            if not message.reference:
                 return
-            
+
             if not message.reference.cached_message.author.id == self.user.id:
                 return
 
-        prompt = re.sub(r'<@([0-9]+)>', "", message.content)
-
         await message.channel.trigger_typing()
+
+        if self.conversation.working:
+            await message.reply("太快了! 請稍等一下!")
+
+            await message.channel.trigger_typing()
+
+            return
+
+        prompt = re.sub(r'<@([0-9]+)>', "", message.content)
 
         response = await self.conversation.ask(prompt)
 

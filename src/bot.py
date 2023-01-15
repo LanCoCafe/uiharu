@@ -33,10 +33,10 @@ class Bot(InteractionBot):
             return
 
         if self.user not in message.mentions:  # This part is suck, I will find a way to improve it.
-            try:
-                if message.reference.cached_message.author.id == self.user.id:
-                    pass
-            except AttributeError:
+            if not message.reference.cached_message:
+                return
+            
+            if not message.reference.cached_message.author.id == self.user.id:
                 return
 
         prompt = re.sub(r'<@([0-9]+)>', "", message.content)

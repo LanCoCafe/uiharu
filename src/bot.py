@@ -1,12 +1,12 @@
 import re
 
 from disnake import Message, Game, Status
-from disnake.ext.commands import Bot as OriginalBot
+from disnake.ext.commands import InteractionBot
 
 from .conversation import Conversation, ConversationStatus
 
 
-class Bot(OriginalBot):
+class Bot(InteractionBot):
     def __init__(self, conversation: Conversation, *args, **kwargs):
         """
         :param conversation: Conversation instance

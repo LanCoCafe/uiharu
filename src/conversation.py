@@ -124,9 +124,19 @@ class Conversation:
 
                 await asyncio.sleep(0.1 * len(question.prompt))  # Simulate typing
 
-                response = await loop.run_in_executor(
-                    None, self.chatbot.ask, question.prompt, self.conversation_id
-                )
+                try:
+                    response = await loop.run_in_executor(
+                        None, self.chatbot.ask, question.prompt, self.conversation_id
+                    )
+                except Exception as error:
+                    question.assign_response(
+                        {
+                            "conversation_id": self.conversation_id,
+                            "message": f"發生了一些錯誤 \n```py\n{error}```",
+                        }
+                    )
+
+                    continue
 
                 print(f"Got response {response}")
 

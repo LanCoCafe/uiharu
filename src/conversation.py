@@ -64,13 +64,15 @@ class Conversation:
 
         self.question_queue = []
 
-    async def wash_brain(self):
+        self.dirtiness = 0
+
+    async def wash_brain(self, wait: bool = False):
         """
         Wash brain with brainwash messages
         :return:
         """
         for message in self.brainwash:
-            await self.ask(message, should_prepared=False)
+            await self.ask(message, should_prepared=False, wait=wait)
 
     async def prepare(self) -> None:
         """
@@ -87,11 +89,12 @@ class Conversation:
 
         print(f"Conversation {self.conversation_id} prepared")
 
-    async def ask(self, message: Question, should_prepared: bool = True) -> str:
+    async def ask(self, message: Question, should_prepared: bool = True, wait: bool = True) -> str:
         """
         Asks chatgpt a question in this conversation
         :param message: Message to ask
         :param should_prepared: Should this conversation in a prepared status
+        :param wait: Should this function wait for response, if False, no response will be returned
         :return: Response message as str
         :raise: Not Prepared if should_prepared is True and conversation isn't prepared
         """
@@ -100,10 +103,13 @@ class Conversation:
 
         self.question_queue.append(message)
 
-        while not message.is_responded():
-            await asyncio.sleep(1)
+        if wait:
+            while not message.is_responded():
+                await asyncio.sleep(1)
 
-        return message.response
+            return message.response
+
+        return ""
 
     def start_asking_loop(self, loop: asyncio.AbstractEventLoop):
         """
@@ -117,6 +123,11 @@ class Conversation:
 
     async def __asking_loop(self, loop: asyncio.AbstractEventLoop):
         while True:
+            if self.dirtiness >= 3:  # TODO: Load dirtiness cap from env instead
+                await self.wash_brain(wait=False)
+
+                self.dirtiness = 0
+
             if self.question_queue:
                 question = self.question_queue.pop(0)
 
@@ -128,6 +139,10 @@ class Conversation:
                     response = await loop.run_in_executor(
                         None, self.chatbot.ask, question.prompt, self.conversation_id
                     )
+
+                    if not response:
+                        raise Exception("Response is empty")
+
                 except Exception as error:
                     question.assign_response(
                         {
@@ -143,6 +158,8 @@ class Conversation:
                 self.conversation_id = response["conversation_id"]
 
                 question.assign_response(response)
+
+                self.dirtiness += 1
 
             await asyncio.sleep(1)
 

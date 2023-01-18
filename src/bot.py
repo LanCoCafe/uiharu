@@ -1,9 +1,17 @@
+import asyncio
 import re
 
 from disnake import Message, Game, Status
+from disnake.abc import Messageable
 from disnake.ext.commands import InteractionBot
 
-from .conversation import Conversation, ConversationStatus
+from .conversation import Conversation, ConversationStatus, Question
+
+
+async def keep_typing(channel: Messageable):
+    while True:
+        await channel.trigger_typing()
+        await asyncio.sleep(10)
 
 
 class Bot(InteractionBot):
@@ -16,6 +24,8 @@ class Bot(InteractionBot):
         super().__init__(*args, **kwargs)
 
         self.conversation = conversation
+
+        self.conversation.start_asking_loop(self.loop)
 
     async def on_ready(self):
         if self.conversation.status != ConversationStatus.PREPARED:
@@ -39,17 +49,12 @@ class Bot(InteractionBot):
             if not message.reference.cached_message.author.id == self.user.id:
                 return
 
-        await message.channel.trigger_typing()
-
-        if self.conversation.working:
-            await message.reply("太快了! 請稍等一下!")
-
-            await message.channel.trigger_typing()
-
-            return
+        typing_task = self.loop.create_task(keep_typing(message.channel))
 
         prompt = re.sub(r'<@([0-9]+)>', "", message.content)
 
-        response = await self.conversation.ask(prompt)
+        response = await self.conversation.ask(Question(prompt))
+
+        typing_task.cancel()
 
         await message.reply(response)

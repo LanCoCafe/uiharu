@@ -5,7 +5,7 @@ from disnake import Intents
 from revChatGPT.ChatGPT import Chatbot
 
 from src.bot import Bot
-from src.conversation import Conversation
+from src.conversation import Conversation, Question
 
 
 def main():
@@ -24,9 +24,13 @@ def main():
         asyncio.get_event_loop().close()
 
 
-def load_brainwash():
+def load_brainwash() -> list[Question]:
+    """
+    Load brainwash messages from brainwash.txt
+    :return: A list of Question
+    """
     with open("brainwash.txt", "r", encoding='utf-8') as f:
-        return f.readlines()
+        return [Question(line) for line in f.readlines()]
 
 
 if __name__ == "__main__":

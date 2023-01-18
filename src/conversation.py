@@ -1,6 +1,4 @@
 import asyncio
-import time
-from collections import deque
 from enum import Enum
 from typing import Union
 
@@ -20,8 +18,38 @@ class ConversationStatus(Enum):
 
 
 # Classes
+class Question:
+    def __init__(self, prompt: str):
+        self.prompt = prompt
+        self.response = ""
+
+    def __str__(self):
+        return self.response
+
+    def is_responded(self):
+        """
+        Check if question has been responded.
+        """
+        return self.response != ""
+
+    def assign_response(self, response: dict):
+        """
+        Assign response to question.
+
+        :param response: Response dict from Chatbot.ask()
+        """
+        # Response will be like this:
+        # {
+        #     "message": str,
+        #     "conversation_id": str,
+        #     "parent_id": str,
+        # }
+
+        self.response = response["message"]
+
+
 class Conversation:
-    def __init__(self, chatbot: Chatbot, brainwash: list[str]):
+    def __init__(self, chatbot: Chatbot, brainwash: list[Question]):
         """
         Initials a conversation
         :param chatbot: Chatbot instance
@@ -34,18 +62,15 @@ class Conversation:
 
         self.conversation_id: Union[str, None] = None  # This will be generated after first message is sent
 
-        self.last_message_time: int = 0
-        self.last_brainwash_time: int = 0
-        self.last_messages = deque(maxlen=5)
-        self.working = False
+        self.question_queue = []
 
     async def wash_brain(self):
+        """
+        Wash brain with brainwash messages
+        :return:
+        """
         for message in self.brainwash:
-            await self.ask(message, should_prepared=False, record=False)
-
-        self.last_brainwash_time = time.time()
-
-        return
+            await self.ask(message, should_prepared=False)
 
     async def prepare(self) -> None:
         """
@@ -58,69 +83,58 @@ class Conversation:
 
         await self.wash_brain()
 
-        asyncio.get_event_loop().create_task(self.brain_washing())
-
         self.status = ConversationStatus.PREPARED
 
         print(f"Conversation {self.conversation_id} prepared")
 
-    async def ask(self, message: str, should_prepared: bool = True, record: bool = True) -> str:
+    async def ask(self, message: Question, should_prepared: bool = True) -> str:
         """
         Asks chatgpt a question in this conversation
         :param message: Message to ask
         :param should_prepared: Should this conversation in a prepared status
-        :param record: Should this message be recorded
-        :return: Response message
+        :return: Response message as str
         :raise: Not Prepared if should_prepared is True and conversation isn't prepared
         """
         if not self.status == ConversationStatus.PREPARED and should_prepared:
             raise NotPrepared("should_prepared is True but the Conversation isn't prepared yet.")
 
-        # Response will be like this:
-        # {
-        #     "message": str,
-        #     "conversation_id": str,
-        #     "parent_id": str,
-        # }
+        self.question_queue.append(message)
 
-        print(f"{self.conversation_id or 'Not assigned'}: {message}")
+        while not message.is_responded():
+            await asyncio.sleep(1)
 
-        self.working = True
+        return message.response
+
+    def start_asking_loop(self, loop: asyncio.AbstractEventLoop):
+        """
+        Start a loop to ask questions in queue.
+
+        This must be called before any question is asked, or no response will be returned.
+        :param loop:
+        :return:
+        """
+        loop.create_task(self.__asking_loop(loop))
+
+    async def __asking_loop(self, loop: asyncio.AbstractEventLoop):
         while True:
-            # noinspection PyBroadException
-            try:
-                response = self.chatbot.ask(message, self.conversation_id)
+            if self.question_queue:
+                question = self.question_queue.pop(0)
 
-                break
-            except Exception:  # This has a high chance to be 429, so sleep for half a minute
-                await asyncio.sleep(30)
+                print(f"Start asking question {question.prompt}")
 
-                continue
+                await asyncio.sleep(0.1 * len(question.prompt))  # Simulate typing
 
-        await asyncio.sleep(2)
-        self.working = False
+                response = await loop.run_in_executor(
+                    None, self.chatbot.ask, question.prompt, self.conversation_id
+                )
 
-        if record:
-            self.last_messages.append(message)
-            self.last_message_time = time.time()
+                print(f"Got response {response}")
 
-        self.conversation_id = response['conversation_id']
+                self.conversation_id = response["conversation_id"]
 
-        print(f"{response['conversation_id'][:23]}... / ChatGPT: {response['message']}")
+                question.assign_response(response)
 
-        return response['message']
-
-    async def brain_washing(self):
-        while True:
-            if self.status == ConversationStatus.PREPARED \
-                    and (time.time() - self.last_message_time) > 120 \
-                    and (time.time() - self.last_brainwash_time) > 120 \
-                    and len(self.last_messages) == 5:
-                await self.wash_brain()
-
-                self.last_messages.clear()
-
-            await asyncio.sleep(20)
+            await asyncio.sleep(1)
 
     def close(self):
         self.chatbot.delete_conversation(self.conversation_id)

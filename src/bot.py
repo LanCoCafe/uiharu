@@ -42,12 +42,8 @@ class Bot(InteractionBot):
         if message.author.id == self.user.id:
             return
 
-        if self.user not in message.mentions:  # This part is suck, I will find a way to improve it.
-            if not message.reference:
-                return
-
-            if not message.reference.cached_message.author.id == self.user.id:
-                return
+        if self.user not in message.mentions:
+            return
 
         typing_task = self.loop.create_task(keep_typing(message.channel))
 

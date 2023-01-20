@@ -30,18 +30,31 @@ T: 期待欸 (RE: N)
 git clone https://github.com/Nat1anWasTaken/uiharu.git
 pip install -r requirements.txt
 ```
+以及 [Google Chrome][Chrome-Download] 和 [Chrome Web Driver][Chrome-Driver-Download]
 
-接著設定環境變數
+運行機器人
+
+Windows:
+```powersell
+set CHATGPT_TOKEN=
+set DISCORD_TOKEN=
+set BRAINWASH_PATH=
+python main.py
+```
+
+Linux:
+```shell
+export CHATGPT_TOKEN=
+export DISCORD_TOKEN=
+export BRAINWASH_PATH=
+python main.py
+```
+> 你也可以透過環境變數指定這些數值，準確地說，上面的 `export` 和 `set` 指令就是在設定環境變數
 
 - `DISCORD_TOKEN` - 你的 Discord Bot Token
 - `CHATGPT_TOKEN` - 你的 ChatGPT Session Token，關於如何獲取，請查看 `acheong08/ChatGPT`
   的 [Setup][acheong08-ChatGPT-Setup] 文檔
-
-運行機器人
-
-```shell
-python main.py
-```
+- `BRAINWASH_PATH` - `brainwash.txt` 的路徑，預設為 `./brainwash.txt`
 
 > 在運行前，機器人會將 `brainwash.txt` 中的每一行依序傳入 ChatGPT，你可以自訂這個檔案
 
@@ -52,3 +65,5 @@ python main.py
 - [ ] 語音合成
 
 [acheong08-ChatGPT-Setup]: https://github.com/acheong08/ChatGPT/wiki/Setup
+[Chrome-Download]: https://chrome.google.com
+[Chrome-Driver-Download]: https://chrome.google.com

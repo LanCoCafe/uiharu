@@ -29,7 +29,7 @@ def load_brainwash() -> list[Question]:
     Load brainwash messages from brainwash.txt
     :return: A list of Question
     """
-    with open("brainwash.txt", "r", encoding='utf-8') as f:
+    with open("/home/twmccreeper/文件/uiharu/brainwash.txt", "r", encoding='utf-8') as f:
         return [Question(line) for line in f.readlines()]
 
 

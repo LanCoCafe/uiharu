@@ -30,18 +30,20 @@ T: 期待欸 (RE: N)
 git clone https://github.com/Nat1anWasTaken/uiharu.git
 pip install -r requirements.txt
 ```
+然後安裝[Google Chrome][https://chrome.google.com]和[Chrome Driver][https://chromedriver.chromium.org/downloads]
+接著更改main.py中的brainwash.txt的路徑爲絕對路徑
 
-接著設定環境變數
 
+運行機器人(建議可以寫成sh或cmd檔)
+
+```shell
+export CHATGPT_TOKEN=
+export DISCORD_TOKEN=
+python main.py
+```
 - `DISCORD_TOKEN` - 你的 Discord Bot Token
 - `CHATGPT_TOKEN` - 你的 ChatGPT Session Token，關於如何獲取，請查看 `acheong08/ChatGPT`
   的 [Setup][acheong08-ChatGPT-Setup] 文檔
-
-運行機器人
-
-```shell
-python main.py
-```
 
 > 在運行前，機器人會將 `brainwash.txt` 中的每一行依序傳入 ChatGPT，你可以自訂這個檔案
 

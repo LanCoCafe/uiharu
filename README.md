@@ -30,7 +30,7 @@ T: 期待欸 (RE: N)
 git clone https://github.com/Nat1anWasTaken/uiharu.git
 pip install -r requirements.txt
 ```
-然後安裝[Google Chrome][https://chrome.google.com]和[Chrome Driver][https://chromedriver.chromium.org/downloads]
+然後安裝[Google Chrome][Chrome-Download]和[Chrome Driver][Chrome-Driver-Download]
 接著更改main.py中的brainwash.txt的路徑爲絕對路徑
 
 
@@ -54,3 +54,5 @@ python main.py
 - [ ] 語音合成
 
 [acheong08-ChatGPT-Setup]: https://github.com/acheong08/ChatGPT/wiki/Setup
+[Chrome-Download]: https://chrome.google.com
+[Chrome-Driver-Download]: https://chrome.google.com

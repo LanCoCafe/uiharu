@@ -6,11 +6,10 @@
 
 在一個段考前的下午，我們意外聊到了有關友情的話題：
 
+- N - [Nat1an][nat1an-github]
+- T - [twmccreeper][twmccreeper-github]
+- C - 匿名朋友 
 ```
-N - Nat1an
-T - twmccreeper
-C - 匿名朋友 
-
 C: 反正我只想要平常有人可以跟我談生活小是這樣就夠惹 但貌似也蠻困難的
 N: ChatGPT
 C: 窩不要
@@ -35,20 +34,15 @@ pip install -r requirements.txt
 運行機器人
 
 Windows:
-```powersell
-set CHATGPT_TOKEN=
-set DISCORD_TOKEN=
-set BRAINWASH_PATH=
-python main.py
-```
+- 以文字編輯器開啟`start_win.cmd`
+- 填入`CHATGPT_TOKEN`、`DISCORD_TOKEN`、`BRAINWASH_PATH`(可選)的值並儲存
+- 執行`start_windows.cmd`
 
 Linux:
-```shell
-export CHATGPT_TOKEN=
-export DISCORD_TOKEN=
-export BRAINWASH_PATH=
-python main.py
-```
+- 以文字編輯器開啟`start_linux.sh`
+- 填入`CHATGPT_TOKEN`、`DISCORD_TOKEN`、`BRAINWASH_PATH`(可選)的值並儲存
+- 執行`start_linux.sh`
+
 > 你也可以透過環境變數指定這些數值，準確地說，上面的 `export` 和 `set` 指令就是在設定環境變數
 
 - `DISCORD_TOKEN` - 你的 Discord Bot Token
@@ -64,6 +58,8 @@ python main.py
 - [ ] 語音辨識
 - [ ] 語音合成
 
+[nat1an-github]: https://github.com/Nat1anWasTaken
+[twmccreeper-github]: https://github.com/twmccreeper
 [acheong08-ChatGPT-Setup]: https://github.com/acheong08/ChatGPT/wiki/Setup
 [Chrome-Download]: https://chrome.google.com
 [Chrome-Driver-Download]: https://chrome.google.com

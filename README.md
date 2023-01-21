@@ -62,4 +62,4 @@ Linux:
 [twmccreeper-github]: https://github.com/twmccreeper
 [acheong08-ChatGPT-Setup]: https://github.com/acheong08/ChatGPT/wiki/Setup
 [Chrome-Download]: https://chrome.google.com
-[Chrome-Driver-Download]: https://chrome.google.com
+[Chrome-Driver-Download]: https://chromedriver.chromium.org/downloads

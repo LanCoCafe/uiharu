@@ -1,0 +1,4 @@
+set CHATGPT_TOKEN=
+set DISCORD_TOKEN=
+set BRAINWASH_PATH=
+python main.py

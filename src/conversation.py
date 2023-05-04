@@ -35,7 +35,6 @@ class Question:
     def assign_response(self, response: dict):
         """
         Assign response to question.
-
         :param response: Response dict from Chatbot.ask()
         """
         # Response will be like this:
@@ -45,7 +44,15 @@ class Question:
         #     "parent_id": str,
         # }
 
-        self.response = response["message"]
+        self.response = ""
+        prev_text = ""
+
+        for i in response:
+            message = i["message"][len(prev_text) :]
+            prev_text = i["message"]
+            self.response += message
+
+        return self.response
 
 
 class Conversation:
@@ -114,7 +121,6 @@ class Conversation:
     def start_asking_loop(self, loop: asyncio.AbstractEventLoop):
         """
         Start a loop to ask questions in queue.
-
         This must be called before any question is asked, or no response will be returned.
         :param loop:
         :return:
@@ -153,9 +159,8 @@ class Conversation:
 
                     continue
 
-                print(f"Got response {response}")
 
-                self.conversation_id = response["conversation_id"]
+                self.conversation_id = next(response)["conversation_id"]
 
                 question.assign_response(response)
 

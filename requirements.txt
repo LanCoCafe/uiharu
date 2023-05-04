@@ -1,2 +1,2 @@
-revChatGPT
-disnake
+revChatGPT==5.0.0
+disnake==2.8.1

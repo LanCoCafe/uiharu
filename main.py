@@ -2,7 +2,7 @@ import asyncio
 from os import getenv
 
 from disnake import Intents
-from revChatGPT.ChatGPT import Chatbot
+from revChatGPT.V1 import Chatbot
 
 from src.bot import Bot
 from src.conversation import Conversation, Question

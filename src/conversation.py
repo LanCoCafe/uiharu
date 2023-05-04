@@ -2,7 +2,7 @@ import asyncio
 from enum import Enum
 from typing import Union
 
-from revChatGPT.ChatGPT import Chatbot
+from revChatGPT.V1 import Chatbot
 
 
 # Exceptions

@@ -43,13 +43,16 @@ class Question:
         #     "conversation_id": str,
         #     "parent_id": str,
         # }
-        
-        prev_text = ""
-        for i in response:
-            self.response = i["message"][len(prev_text) :]
-            print(self.response, end="", flush=True)
-            prev_text = i["message"]
 
+        self.response = ""
+        prev_text = ""
+
+        for i in response:
+            message = i["message"][len(prev_text) :]
+            prev_text = i["message"]
+            self.response += message
+
+        return self.response
 
 
 class Conversation:

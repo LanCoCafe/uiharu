@@ -8,7 +8,8 @@
 
 - N - [Nat1an][nat1an-github]
 - R - [凛にゃん][rinnyanneko-github]
-- C - 匿名朋友 
+- C - 匿名朋友
+
 ```
 C: 反正我只想要平常有人可以跟我談生活小是這樣就夠惹 但貌似也蠻困難的
 N: ChatGPT
@@ -29,26 +30,35 @@ R: 期待欸 (RE: N)
 git clone https://github.com/Nat1anWasTaken/uiharu.git
 pip install -r requirements.txt
 ```
+
 以及 [Google Chrome][Chrome-Download] 和 [Chrome Web Driver][Chrome-Driver-Download]
 
-運行機器人
+#### 準備
 
-Windows:
-- 以文字編輯器開啟`start_win.cmd`
-- 填入`CHATGPT_TOKEN`、`DISCORD_TOKEN`、`BRAINWASH_PATH`(可選)的值並儲存
-- 執行`start_windows.cmd`
+將 `.env.example` 重新命名至 `.env`，並填入以下數值：
 
-Linux:
-- 以文字編輯器開啟`start_linux.sh`
-- 填入`CHATGPT_TOKEN`、`DISCORD_TOKEN`、`BRAINWASH_PATH`(可選)的值並儲存
-- 執行`start_linux.sh`
-
-> 你也可以透過環境變數指定這些數值，準確地說，上面的 `export` 和 `set` 指令就是在設定環境變數
+```dotenv
+DISCORD_TOKEN=your_bot_token
+CHATGPT_TOKEN=your_chatgpt_session_token
+BRAINWASH_PATH=your_brainwash_path
+```
 
 - `DISCORD_TOKEN` - 你的 Discord Bot Token
 - `CHATGPT_TOKEN` - 你的 ChatGPT Session Token，關於如何獲取，請查看 `acheong08/ChatGPT`
   的 [Setup][acheong08-ChatGPT-Setup] 文檔
 - `BRAINWASH_PATH` - `brainwash.txt` 的路徑，預設為 `./brainwash.txt`
+
+#### 運行
+
+```shell
+python main.py
+```
+
+如果你想要使用 Docker
+
+```shell
+docker-compose up
+```
 
 > 在運行前，機器人會將 `brainwash.txt` 中的每一行依序傳入 ChatGPT，你可以自訂這個檔案
 
@@ -59,7 +69,11 @@ Linux:
 - [ ] 語音合成
 
 [nat1an-github]: https://github.com/Nat1anWasTaken
+
 [rinnyanneko-github]: https://github.com/rinnyanneko
+
 [acheong08-ChatGPT-Setup]: https://github.com/acheong08/ChatGPT/wiki/Setup
+
 [Chrome-Download]: https://chrome.google.com
+
 [Chrome-Driver-Download]: https://chromedriver.chromium.org/downloads

@@ -1,0 +1,6 @@
+version: '2'
+services:
+  uiharu:
+    build: .
+    env_file:
+      - .env

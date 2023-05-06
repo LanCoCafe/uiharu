@@ -2,6 +2,7 @@ import asyncio
 from os import getenv
 
 from disnake import Intents
+from dotenv import load_dotenv
 from revChatGPT.V1 import Chatbot
 
 from src.bot import Bot
@@ -9,6 +10,8 @@ from src.conversation import Conversation, Question
 
 
 def main():
+    load_dotenv()
+
     conversation = Conversation(
         Chatbot({"session_token": getenv("CHATGPT_TOKEN")}),
         load_brainwash()

@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 以及 [Google Chrome][Chrome-Download] 和 [Chrome Web Driver][Chrome-Driver-Download]
 
-運行機器人
+#### 準備
 
 將 `.env.example` 重新命名至 `.env`，並填入以下數值：
 
@@ -48,10 +48,16 @@ BRAINWASH_PATH=your_brainwash_path
   的 [Setup][acheong08-ChatGPT-Setup] 文檔
 - `BRAINWASH_PATH` - `brainwash.txt` 的路徑，預設為 `./brainwash.txt`
 
-接下來，運行
+#### 運行
 
 ```shell
 python main.py
+```
+
+如果你想要使用 Docker
+
+```shell
+docker-compose up
 ```
 
 > 在運行前，機器人會將 `brainwash.txt` 中的每一行依序傳入 ChatGPT，你可以自訂這個檔案
